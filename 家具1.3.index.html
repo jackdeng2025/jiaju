@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>家居百事通1.2版</title>
+  <style>
+    /* 基本样式 */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #e0f7fa; /* 浅蓝色背景 */
+      color: #333;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ff9800; /* 阿里橙色 */
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .tab {
+      cursor: pointer;
+      padding: 10px 20px;
+      border: 1px solid #ddd;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      background: #fff;
+      color: #333;
+      transition: background 0.3s ease, color 0.3s ease;
+      flex: 1; /* 使Tab等分屏幕宽度 */
+      text-align: center; /* 文字居中 */
+    }
+
+    .tab.active,
+    .tab:hover {
+      color: #fff;
+    }
+
+    .tab.tab-drivers {
+      background: #0056b3; /* 深蓝色 */
+    }
+
+    .tab.tab-supplies {
+      background: #ff9800; /* 阿里橙色 */
+    }
+
+    .tab.tab-repairmen {
+      background: #00a65a; /* 绿色 */
+    }
+
+    .card {
+      background: #0056b3; /* 深蓝色 */
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      color: #fff; /* 文字颜色改为白色 */
+      text-align: center; /* 居中对齐 */
+      display: none; /* 默认隐藏卡片内容 */
+    }
+
+    .card.active {
+      display: block; /* 显示当前激活的卡片内容 */
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #ff9800; /* 阿里橙色 */
+    }
+
+    .contact-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center; /* 卡片居中对齐 */
+    }
+
+    .contact-item {
+      background: #fff; /* 卡片背景色为白色 */
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px; /* 增加内边距 */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 25%; /* 卡片宽度设置为25% */
+      min-height: 120px; /* 新的最小高度 */
+      overflow: hidden; /* 隐藏超出的内容 */
+    }
+
+    .contact-item h3 {
+      margin: 0;
+      color: #ff9800; /* 阿里橙色 */
+    }
+
+    .contact-item p {
+      margin: 10px 0;
+      color: #333;
+      white-space: normal; /* 允许换行 */
+      line-height: 1.5; /* 行高 */
+      height: 0; /* 初始隐藏 */
+      overflow: hidden; /* 隐藏超出的内容 */
+      position: relative; /* 相对定位 */
+      transition: height 0.3s ease; /* 平滑过渡 */
+    }
+
+    .contact-item p.expanded {
+      height: auto; /* 展开时显示全部内容 */
+    }
+
+    .contact-item a {
+      color: #0056b3; /* 深蓝色 */
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .contact-item a:hover {
+      text-decoration: underline;
+    }
+
+    .expand-button {
+      margin-top: 10px;
+      color: #0056b3; /* 深蓝色 */
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .expand-button:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .contact-item {
+        width: 25%; /* 手机端卡片宽度也为25% */
+      }
+    }
+
+    /* 联系我们的按钮样式 */
+    .contact-us-btn {
+      display: block;
+      width: 200px;
+      margin: 20px auto 0;
+      padding: 10px;
+      background: #ff9800; /* 阿里橙色 */
+      color: #fff;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+
+    .contact-us-btn:hover {
+      background: #e68a00; /* 阿里橙色加深 */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>家居百事通1.2版</h1>
+
+    <!-- 联系我们的按钮 -->
+    <a href="tel:18079763918" class="contact-us-btn">联系我们收录家居百事通</a>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab tab-drivers active" onclick="switchTab(0)">找送货师傅</div>
+      <div class="tab tab-supplies" onclick="switchTab(1)">找耗材配件</div>
+      <div class="tab tab-repairmen" onclick="switchTab(2)">找维修师傅</div>
+    </div>
+
+    <!-- 送货司机列表 -->
+    <div id="drivers" class="card active">
+      <h2>送货司机</h2>
+      <div id="drivers-list" class="contact-list"></div>
+    </div>
+
+    <!-- 办公耗材展示区 -->
+    <div id="office-supplies" class="card">
+      <h2>办公耗材</h2>
+      <div id="supplies-list" class="contact-list"></div>
+    </div>
+
+    <!-- 维修师傅列表 -->
+    <div id="repairmen" class="card">
+      <h2>维修师傅</h2>
+      <div id="repairmen-list" class="contact-list"></div>
+    </div>
+  </div>
+
+  <script>
+    // 数据示例
+    const drivers = [
+      { name: '王司机', description: '提供市区内快速送货服务。经验丰富，准时送达。', phone: '12345678901' },
+      { name: '赵司机', description: '提供长途货物运输服务。安全可靠，专业车队。', phone: '12345678902' },
+      { name: '孙司机', description: '专业搬运服务。搬家、办公室搬迁，细心周到。', phone: '12345678903' },
+      { name: '李司机', description: '小型货车送货。灵活便捷，适合各种小件物品。', phone: '12345678904' },
+      { name: '周司机', description: '大件物品搬运。重型机械、家具等专业搬运。', phone: '12345678905' },
+      { name: '吴司机', description: '夜间送货服务。24小时服务，满足紧急需求。', phone: '12345678906' },
+      { name: '郑司机', description: '冷藏车送货。食品、药品等冷链配送。', phone: '12345678907' },
+      { name: '冯司机', description: '快递配送服务。快速高效，覆盖全国。', phone: '12345678908' },
+      { name: '陈司机', description: '搬家服务。一站式搬家解决方案，省心省力。', phone: '12345678909' },
+      { name: '褚司机', description: '物流配送。专业的物流团队，确保货物安全。', phone: '12345678910' },
+      { name: '韩司机', description: '特殊货物运输。危险品、易碎品等专业运输。', phone: '12345678911' },
+      { name: '何司机', description: '紧急送货服务。快速响应，解决突发需求。', phone: '12345678912' }
+    ];
+
+    const supplies = [
+      { name: '文具店A', description: '各种办公文具，打印机墨盒等。品种齐全，质量保证。', phone: '12345678911' },
+      { name: '文具店B', description: '办公用品批发，文件夹，笔记本等。价格优惠，批量采购更划算。', phone: '12345678912' },
+      { name: '文具店C', description: '办公耗材零售。日常办公所需，一站购齐。', phone: '12345678913' },
+      { name: '文具店D', description: '打印纸批发。多种规格，满足不同需求。', phone: '12345678914' },
+      { name: '文具店E', description: '办公桌椅销售。舒适耐用，提升办公环境。', phone: '12345678915' },
+      { name: '文具店F', description: '办公设备租赁。短期租赁，灵活方便。', phone: '12345678916' },
+      { name: '文具店G', description: '办公文具定制。个性化定制，彰显企业形象。', phone: '12345678917' },
+      { name: '文具店H', description: '办公耗材配送。快速配送，及时到位。', phone: '12345678918' },
+      { name: '文具店I', description: '办公用品维修。专业维修，延长使用寿命。', phone: '12345678919' },
+      { name: '文具店J', description: '办公环境设计。专业设计，打造舒适办公空间。', phone: '12345678920' },
+      { name: '文具店K', description: '办公耗材回收。环保回收，资源再利用。', phone: '12345678921' },
+      { name: '文具店L', description: '办公用品安装。专业安装，确保正常使用。', phone: '12345678922' }
+    ];
+
+    const repairmen = [
+      { name: '张师傅', description: '电视、冰箱、洗衣机等家用电器维修。经验丰富，技术精湛。', phone: '12345678921' },
+      { name: '李师傅', description: '水管、下水道疏通及维修。快速响应，解决问题。', phone: '12345678922' },
+      { name: '王师傅', description: '空调安装与维修。专业团队，保证质量。', phone: '12345678923' },
+      { name: '赵师傅', description: '电路故障排查与维修。安全第一，细致入微。', phone: '12345678924' },
+      { name: '孙师傅', description: '燃气灶维修。专业维修，保障安全。', phone: '12345678925' },
+      { name: '刘师傅', description: '门窗维修。专业修复，美观耐用。', phone: '12345678926' },
+      { name: '陈师傅', description: '地板维修与更换。专业施工，恢复如新。', phone: '12345678927' },
+      { name: '杨师傅', description: '墙面修补与粉刷。专业修补，焕然一新。', phone: '12345678928' },
+      { name: '黄师傅', description: '卫浴设备维修。专业维修，确保使用。', phone: '12345678929' },
+      { name: '周师傅', description: '灯具安装与维修。专业安装，照亮生活。', phone: '12345678930' },
+      { name: '徐师傅', description: '家具修复。专业修复，恢复原貌。', phone: '12345678931' },
+      { name: '朱师傅', description: '家电安装。专业安装，确保使用。', phone: '12345678932' }
+    ];
+
+    // 自定义排序
+    const customDriversOrder = ['王司机', '赵司机', '孙司机', '李司机', '周司机', '吴司机', '郑司机', '冯司机', '陈司机', '褚司机', '韩司机', '何司机'];
+    const customSuppliesOrder = ['文具店A', '文具店B', '文具店C', '文具店D', '文具店E', '文具店F', '文具店G', '文具店H', '文具店I', '文具店J', '文具店K', '文具店L'];
+    const customRepairmenOrder = ['张师傅', '李师傅', '王师傅', '赵师傅', '孙师傅', '刘师傅', '陈师傅', '杨师傅', '黄师傅', '周师傅', '徐师傅', '朱师傅'];
+
+    // 根据自定义顺序重新排列数据
+    drivers.sort((a, b) => customDriversOrder.indexOf(a.name) - customDriversOrder.indexOf(b.name));
+    supplies.sort((a, b) => customSuppliesOrder.indexOf(a.name) - customSuppliesOrder.indexOf(b.name));
+    repairmen.sort((a, b) => customRepairmenOrder.indexOf(a.name) - customRepairmenOrder.indexOf(b.name));
+
+    // 渲染卡片
+    function renderCards(data, listId) {
+      const listElement = document.getElementById(listId);
+      listElement.innerHTML = '';
+
+      data.forEach((item, index) => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'contact-item';
+        itemElement.setAttribute('data-order', index + 1);
+        itemElement.innerHTML = `
+          <h3>${item.name}</h3>
+          <p id="description-${index}" class="collapsed">${item.description}</p>
+          <a href="tel:${item.phone}" class="phone-number-link">电话联系</a>
+          <span class="expand-button" onclick="toggleDescription(${index})">展开</span>
+        `;
+        listElement.appendChild(itemElement);
+      });
+    }
+
+    // 切换Tab
+    function switchTab(tabIndex) {
+      const tabs = document.querySelectorAll('.tab');
+      const cards = ['#drivers', '#office-supplies', '#repairmen'];
+
+      tabs.forEach((tab, index) => {
+        tab.classList.toggle('active', tabIndex === index);
+      });
+
+      cards.forEach((card, index) => {
+        const cardElement = document.querySelector(card);
+        cardElement.classList.toggle('active', tabIndex === index);
+
+        if (tabIndex === index) {
+          if (index === 0) {
+            renderCards(drivers, 'drivers-list');
+          } else if (index === 1) {
+            renderCards(supplies, 'supplies-list');
+          } else if (index === 2) {
+            renderCards(repairmen, 'repairmen-list');
+          }
+        }
+      });
+    }
+
+    // 展开/收起描述
+    function toggleDescription(index) {
+      const descriptionElement = document.getElementById(`description-${index}`);
+      const expandButton = document.querySelector(`.expand-button[onclick*="toggleDescription(${index}")`);
+
+      if (descriptionElement.classList.contains('expanded')) {
+        // 收起描述
+        descriptionElement.classList.remove('expanded');
+        descriptionElement.style.height = '0'; // 确保高度变为0
+        expandButton.textContent = '展开';
+      } else {
+        // 展开描述
+        descriptionElement.classList.add('expanded');
+        descriptionElement.style.height = `${descriptionElement.scrollHeight}px`; // 设置高度为内容的实际高度
+        expandButton.textContent = '收起';
+      }
+    }
+
+    // 初始化第一个Tab
+    switchTab(0);
+  </script>
+</body>
+</html>
